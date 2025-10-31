@@ -1,0 +1,824 @@
+/* ==========================================================================
+   Kelvor - Runescape-Inspired Idle RPG
+   Accessibility & A11y Styles
+   ========================================================================== */
+
+/* Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+  /* Disable all animations and transitions */
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  /* Specific animation overrides */
+  .animate-spin,
+  .animate-pulse,
+  .animate-shimmer,
+  .animate-glow,
+  .animate-float,
+  .animate-loading-dots,
+  .animate-loading-bar,
+  .animate-loading-rotate,
+  .animate-loading-pulse {
+    animation: none !important;
+  }
+
+  /* Loading progress bar without shimmer */
+  .loading-progress-bar::after {
+    display: none;
+  }
+
+  /* Hover states without transitions */
+  .btn:hover,
+  .action-button:hover,
+  .inventory-slot:hover,
+  .quest-item:hover,
+  .skill-item:hover,
+  .card:hover {
+    transform: none;
+    transition: none;
+  }
+
+  /* Tooltips appear instantly */
+  .tooltip {
+    transition: none;
+    opacity: 1;
+  }
+
+  .tooltip.show {
+    opacity: 1;
+  }
+
+  /* Modal transitions removed */
+  .modal-backdrop,
+  .modal-content {
+    animation: none;
+    transition: none;
+  }
+
+  /* Notification animations removed */
+  .notification {
+    animation: none;
+    transition: none;
+  }
+
+  /* Combat animations simplified or removed */
+  .damage-number {
+    animation: none;
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .critical-hit {
+    animation: none;
+    transform: scale(1);
+    filter: none;
+  }
+
+  .loot-drop {
+    animation: none;
+    transform: translateY(0);
+  }
+
+  .coin-collect {
+    animation: none;
+    transform: none;
+    opacity: 1;
+  }
+
+  /* Level up animation simplified */
+  .level-up {
+    animation: none;
+    transform: scale(1);
+  }
+
+  /* Button press effect simplified */
+  .btn:active,
+  .action-button:active {
+    transform: none;
+  }
+}
+
+/* High Contrast Mode Support */
+@media (prefers-contrast: high) {
+  :root {
+    /* Increased opacity and contrast */
+    --glass-bg: rgba(255, 255, 255, 0.15);
+    --glass-border: rgba(255, 255, 255, 0.5);
+    --text-secondary: var(--text-primary);
+    --text-muted: var(--text-primary);
+    --shadow-color: rgba(0, 0, 0, 0.8);
+
+    /* Stronger borders */
+    --border-color: #ffffff;
+    --border-light: #ffffff;
+
+    /* More vibrant colors */
+    --primary-color: #1a4d8f;
+    --secondary-color: #0066cc;
+    --success-color: #008000;
+    --warning-color: #ff8c00;
+    --danger-color: #cc0000;
+  }
+
+  /* Enhanced borders and outlines */
+  .btn,
+  .input,
+  .card,
+  .modal-content,
+  .notification,
+  .tooltip {
+    border: 2px solid var(--border-color);
+  }
+
+  /* Enhanced text contrast */
+  .text-secondary,
+  .text-muted {
+    color: var(--text-primary);
+    opacity: 1;
+  }
+
+  /* Stronger shadows */
+  .shadow-md,
+  .shadow-lg,
+  .shadow-xl,
+  .shadow-2xl {
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.9), 0 2px 4px -1px rgba(0, 0, 0, 0.9);
+  }
+
+  /* Glass morphism simplified for contrast */
+  .glass,
+  .glass-md,
+  .glass-lg {
+    background: rgba(255, 255, 255, 0.2);
+    border: 2px solid rgba(255, 255, 255, 0.8);
+    backdrop-filter: none;
+  }
+
+  /* Progress bars with stronger borders */
+  .progress {
+    border: 1px solid var(--border-color);
+  }
+
+  /* Inventory slots with clear borders */
+  .inventory-slot {
+    border: 2px solid var(--border-color);
+  }
+
+  .inventory-slot:hover {
+    border-color: var(--secondary-color);
+    border-width: 3px;
+  }
+
+  /* Action buttons with clear states */
+  .action-button {
+    border: 2px solid var(--border-color);
+  }
+
+  .action-button.active {
+    border-color: var(--secondary-color);
+    border-width: 3px;
+  }
+
+  .action-button.cooldown {
+    border-color: var(--text-muted);
+    border-style: dashed;
+  }
+}
+
+/* Screen Reader Only Content */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.sr-only-focusable:focus,
+.sr-only-focusable:active {
+  position: static;
+  width: auto;
+  height: auto;
+  padding: var(--spacing-sm);
+  margin: 0;
+  overflow: visible;
+  clip: auto;
+  white-space: normal;
+  background: var(--primary-color);
+  color: var(--text-primary);
+  border: 2px solid var(--secondary-color);
+  border-radius: var(--radius-md);
+}
+
+/* Focus Indicators */
+.focus-visible {
+  outline: 2px solid var(--secondary-color);
+  outline-offset: 2px;
+}
+
+.focus-ring {
+  box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.5);
+}
+
+.focus-visible.focus-ring {
+  outline: 2px solid var(--secondary-color);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.5);
+}
+
+/* Enhanced focus for better visibility */
+.btn:focus-visible,
+.action-button:focus-visible,
+.inventory-slot:focus-visible,
+.quest-item:focus-visible,
+.skill-item:focus-visible,
+.modal-close:focus-visible,
+.notification-close:focus-visible,
+.tab-button:focus-visible,
+.error-button:focus-visible,
+.browser-link:focus-visible {
+  outline: 3px solid var(--warning-color);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 5px rgba(243, 156, 18, 0.3);
+}
+
+/* Input focus states */
+.input:focus-visible,
+.select:focus-visible,
+.chat-input:focus-visible {
+  outline: 3px solid var(--secondary-color);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 5px rgba(52, 152, 219, 0.3);
+}
+
+/* Skip Links */
+.skip-links {
+  position: fixed;
+  top: -100px;
+  left: 0;
+  right: 0;
+  z-index: var(--z-modal);
+  display: flex;
+  justify-content: center;
+  padding: var(--spacing-sm);
+}
+
+.skip-link {
+  background: var(--primary-color);
+  color: var(--text-primary);
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: var(--radius-md);
+  text-decoration: none;
+  font-weight: 600;
+  transform: translateY(-100px);
+  transition: transform 0.3s ease;
+}
+
+.skip-link:focus {
+  transform: translateY(0);
+}
+
+/* ARIA Live Regions */
+.aria-live-polite {
+  position: absolute;
+  left: -10000px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+.aria-live-assertive {
+  position: absolute;
+  left: -10000px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+/* Accessible Loading Progress */
+.loading-progress[role="progressbar"] {
+  position: relative;
+}
+
+.loading-progress[aria-valuenow]::before {
+  content: attr(aria-valuenow) "% loaded";
+  position: absolute;
+  top: -25px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 2px 8px;
+  border-radius: var(--radius-sm);
+  font-size: var(--font-size-xs);
+  font-family: var(--font-family-mono);
+}
+
+/* Accessible Buttons with Icons */
+.btn[aria-label],
+.action-button[aria-label] {
+  position: relative;
+}
+
+.btn[aria-label]::after,
+.action-button[aria-label]::after {
+  content: attr(aria-label);
+  position: absolute;
+  bottom: -25px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.9);
+  color: white;
+  padding: 4px 8px;
+  border-radius: var(--radius-sm);
+  font-size: var(--font-size-xs);
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+  z-index: var(--z-tooltip);
+}
+
+.btn[aria-label]:focus::after,
+.action-button[aria-label]:focus::after {
+  opacity: 1;
+}
+
+/* Keyboard Navigation Support */
+.keyboard-user *:focus {
+  outline: 2px solid var(--secondary-color);
+  outline-offset: 2px;
+}
+
+.keyboard-user .btn:focus,
+.keyboard-user .action-button:focus,
+.keyboard-user .inventory-slot:focus,
+.keyboard-user .quest-item:focus,
+.keyboard-user .skill-item:focus {
+  outline: 3px solid var(--warning-color);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 5px rgba(243, 156, 18, 0.3);
+}
+
+/* Accessible Tables (if needed) */
+.accessible-table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.accessible-table th,
+.accessible-table td {
+  border: 1px solid var(--border-color);
+  padding: var(--spacing-sm);
+  text-align: left;
+}
+
+.accessible-table th {
+  background-color: var(--glass-bg);
+  font-weight: 600;
+}
+
+.accessible-table caption {
+  caption-side: bottom;
+  text-align: left;
+  font-style: italic;
+  margin-top: var(--spacing-sm);
+  color: var(--text-muted);
+}
+
+/* Accessible Form Labels */
+.form-group {
+  margin-bottom: var(--spacing-md);
+}
+
+.form-label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: var(--spacing-xs);
+  color: var(--text-primary);
+}
+
+.form-label.required::after {
+  content: " *";
+  color: var(--danger-color);
+}
+
+.form-description {
+  font-size: var(--font-size-sm);
+  color: var(--text-muted);
+  margin-bottom: var(--spacing-xs);
+}
+
+.form-error {
+  font-size: var(--font-size-sm);
+  color: var(--danger-color);
+  margin-top: var(--spacing-xs);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+}
+
+.form-error::before {
+  content: "⚠️";
+  font-size: var(--font-size-sm);
+}
+
+/* Accessible Notifications */
+.notification[role="alert"] {
+  position: relative;
+}
+
+.notification[role="alert"]::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+}
+
+.notification[role="alert"].success::before {
+  background-color: var(--success-color);
+}
+
+.notification[role="alert"].error::before {
+  background-color: var(--danger-color);
+}
+
+.notification[role="alert"].warning::before {
+  background-color: var(--warning-color);
+}
+
+.notification[role="alert"].info::before {
+  background-color: var(--info-color);
+}
+
+/* Accessible Modal Dialogs */
+.modal[role="dialog"] {
+  position: relative;
+}
+
+.modal[role="dialog"][aria-labelledby]::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+}
+
+.modal[aria-modal="true"] {
+  /* Ensure modal is properly announced */
+}
+
+/* Accessible Tabs */
+.tab-list[role="tablist"] {
+  border: none;
+}
+
+.tab-button[role="tab"] {
+  position: relative;
+}
+
+.tab-button[role="tab"][aria-selected="true"] {
+  background: var(--secondary-color);
+  color: white;
+}
+
+.tab-button[role="tab"][aria-selected="true"]::after {
+  content: "";
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--secondary-color);
+}
+
+.tab-panel[role="tabpanel"] {
+  outline: none;
+}
+
+.tab-panel[role="tabpanel"][aria-hidden="true"] {
+  display: none;
+}
+
+.tab-panel[role="tabpanel"][aria-hidden="false"] {
+  display: block;
+}
+
+/* Accessible Progress Bars */
+.progress[role="progressbar"] {
+  position: relative;
+}
+
+.progress[aria-valuenow][aria-valuemin][aria-valuemax] {
+  /* Ensure progress is properly announced */
+}
+
+.progress-bar::after {
+  content: attr(aria-label);
+  position: absolute;
+  right: var(--spacing-sm);
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: var(--font-size-xs);
+  font-family: var(--font-family-mono);
+  color: var(--text-primary);
+  text-shadow: 1px 1px 2px var(--shadow-color);
+}
+
+/* Accessible Tooltips */
+.tooltip[role="tooltip"] {
+  position: absolute;
+  z-index: var(--z-tooltip);
+}
+
+/* Accessible Toggle Switches */
+.toggle-switch[role="switch"] {
+  position: relative;
+}
+
+.toggle-switch[aria-checked="true"] {
+  background-color: var(--success-color);
+}
+
+.toggle-switch[aria-checked="false"] {
+  background-color: var(--glass-border);
+}
+
+/* Accessible Range Sliders */
+.slider[role="slider"] {
+  position: relative;
+}
+
+.slider[aria-valuenow]::after {
+  content: attr(aria-valuenow);
+  position: absolute;
+  top: -25px;
+  left: var(--slider-value-position, 50%);
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 2px 6px;
+  border-radius: var(--radius-sm);
+  font-size: var(--font-size-xs);
+  font-family: var(--font-family-mono);
+}
+
+/* Accessible Tree Views */
+.skill-tree[role="tree"] {
+  outline: none;
+}
+
+.skill-category[role="treeitem"] {
+  position: relative;
+}
+
+.skill-category[aria-expanded="true"] .skill-items {
+  display: block;
+}
+
+.skill-category[aria-expanded="false"] .skill-items {
+  display: none;
+}
+
+/* Color Blindness Support */
+.colorblind-friendly .progress-health .progress-bar {
+  background: linear-gradient(90deg, #0066cc, #4d94ff);
+}
+
+.colorblind-friendly .progress-mana .progress-bar {
+  background: linear-gradient(90deg, #ff9900, #ffcc00);
+}
+
+.colorblind-friendly .progress-experience .progress-bar {
+  background: linear-gradient(90deg, #00cc66, #66ff99);
+}
+
+.colorblind-friendly .badge-rarity-epic {
+  background: linear-gradient(90deg, #6600cc, #9933ff);
+}
+
+/* Large Text Support */
+@media (min-resolution: 120dpi) {
+  .text-scalable {
+    font-size: 1.1em;
+  }
+}
+
+@media (min-resolution: 144dpi) {
+  .text-scalable {
+    font-size: 1.2em;
+  }
+}
+
+/* Print Accessibility */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+
+  .print-only {
+    display: block !important;
+  }
+
+  body {
+    background: white !important;
+    color: black !important;
+    font-size: 12pt;
+    line-height: 1.4;
+  }
+
+  .card,
+  .modal-content {
+    border: 1px solid #000;
+    box-shadow: none;
+    page-break-inside: avoid;
+  }
+
+  .btn,
+  .action-button {
+    border: 1px solid #000;
+    background: white !important;
+    color: black !important;
+  }
+
+  .progress {
+    border: 1px solid #000;
+    background: white;
+  }
+
+  .progress-bar {
+    background: #000;
+  }
+
+  a[href]:after {
+    content: " (" attr(href) ")";
+    font-size: 0.9em;
+    color: #666;
+  }
+
+  a[href^="#"]:after {
+    content: "";
+  }
+}
+
+/* Voice Control Support */
+.voice-control .btn[aria-label],
+.voice-control .action-button[aria-label] {
+  position: relative;
+}
+
+.voice-control .btn[aria-label]::before,
+.voice-control .action-button[aria-label]::before {
+  content: attr(aria-label);
+  position: absolute;
+  top: -30px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.9);
+  color: white;
+  padding: 4px 8px;
+  border-radius: var(--radius-sm);
+  font-size: var(--font-size-xs);
+  white-space: nowrap;
+  opacity: 1;
+  pointer-events: none;
+  z-index: var(--z-tooltip);
+}
+
+/* Screen Reader Optimized Content */
+.screen-reader-stats {
+  position: absolute;
+  left: -10000px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+.screen-reader-stats[aria-live="polite"] {
+  /* Announce important game state changes */
+}
+
+/* Accessible Game Canvas */
+canvas[role="img"][aria-label] {
+  /* Ensure canvas is accessible */
+}
+
+canvas[aria-label="Game canvas"] {
+  /* Main game canvas accessibility */
+}
+
+/* Accessibility Controls Panel */
+.a11y-controls {
+  position: fixed;
+  top: var(--spacing-md);
+  left: var(--spacing-md);
+  z-index: var(--z-fixed);
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-md);
+  backdrop-filter: blur(10px);
+}
+
+.a11y-controls-title {
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  margin-bottom: var(--spacing-sm);
+  color: var(--text-primary);
+}
+
+.a11y-control {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  margin-bottom: var(--spacing-xs);
+}
+
+.a11y-control-label {
+  font-size: var(--font-size-xs);
+  color: var(--text-secondary);
+}
+
+.a11y-toggle {
+  width: 40px;
+  height: 20px;
+  background: var(--glass-border);
+  border-radius: var(--radius-full);
+  position: relative;
+  cursor: pointer;
+}
+
+.a11y-toggle.active {
+  background: var(--success-color);
+}
+
+.a11y-toggle-slider {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 16px;
+  height: 16px;
+  background: white;
+  border-radius: var(--radius-full);
+  transition: transform 0.2s ease;
+}
+
+.a11y-toggle.active .a11y-toggle-slider {
+  transform: translateX(20px);
+}
+
+/* High Visibility Mode */
+.high-visibility {
+  --border-width: 3px;
+  --outline-width: 3px;
+}
+
+.high-visibility .btn,
+.high-visibility .action-button,
+.high-visibility .inventory-slot,
+.high-visibility .quest-item,
+.high-visibility .skill-item {
+  border-width: var(--border-width);
+}
+
+.high-visibility *:focus {
+  outline-width: var(--outline-width);
+  outline-offset: 3px;
+}
+
+/* Cognitive Load Reduction */
+.cognitive-friendly {
+  --animation-duration: 0.5s;
+  --transition-duration: 0.3s;
+}
+
+.cognitive-friendly * {
+  animation-duration: var(--animation-duration) !important;
+  transition-duration: var(--transition-duration) !important;
+}
+
+.cognitive-friendly .game-hud {
+  opacity: 0.8;
+}
+
+.cognitive-friendly .notification {
+  opacity: 0.9;
+}
+
+.cognitive-friendly .tooltip {
+  opacity: 0.9;
+}

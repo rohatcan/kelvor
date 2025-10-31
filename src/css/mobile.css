@@ -1,0 +1,1017 @@
+/* ==========================================================================
+   Kelvor - Runescape-Inspired Idle RPG
+   Mobile Responsive Styles
+   ========================================================================== */
+
+/* Mobile-Specific Variables */
+@media (max-width: 768px) {
+  :root {
+    /* Reduced spacing for mobile */
+    --spacing-xs: 0.125rem;
+    --spacing-sm: 0.375rem;
+    --spacing-md: 0.75rem;
+    --spacing-lg: 1.125rem;
+    --spacing-xl: 1.5rem;
+    --spacing-2xl: 2.25rem;
+    --spacing-3xl: 3rem;
+
+    /* Smaller font sizes for mobile */
+    --font-size-xs: 0.75rem;
+    --font-size-sm: 0.8125rem;
+    --font-size-base: 0.875rem;
+    --font-size-lg: 1rem;
+    --font-size-xl: 1.125rem;
+    --font-size-2xl: 1.25rem;
+    --font-size-3xl: 1.5rem;
+    --font-size-4xl: 1.875rem;
+    --font-size-5xl: 2.25rem;
+
+    /* Larger touch targets */
+    --touch-target-min: 44px;
+    --touch-target-comfortable: 48px;
+  }
+}
+
+/* Tablet Landscape (768px - 1024px) */
+@media (max-width: 1024px) and (orientation: landscape) {
+  .game-hud {
+    flex-direction: row;
+    align-items: flex-start;
+    gap: var(--spacing-md);
+  }
+
+  .hud-panel-left,
+  .hud-panel-right {
+    align-self: stretch;
+  }
+
+  .inventory,
+  .skill-tree {
+    position: relative;
+    top: auto;
+    right: auto;
+    left: auto;
+    transform: none;
+    margin: var(--spacing-md);
+  }
+
+  .action-bar {
+    bottom: var(--spacing-sm);
+    padding: var(--spacing-sm);
+  }
+
+  .action-button {
+    width: 40px;
+    height: 40px;
+  }
+}
+
+/* Tablet Portrait (768px - 1024px) */
+@media (max-width: 1024px) and (orientation: portrait) {
+  .game-hud {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--spacing-sm);
+  }
+
+  .hud-panel {
+    min-width: auto;
+  }
+
+  .inventory,
+  .skill-tree {
+    min-width: 280px;
+    max-width: 90vw;
+  }
+
+  .quest-log,
+  .settings-panel {
+    min-width: 350px;
+    max-width: 95vw;
+  }
+}
+
+/* Mobile Large (480px - 768px) */
+@media (max-width: 768px) {
+  /* Base Layout Adjustments */
+  html {
+    font-size: 14px;
+  }
+
+  body {
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+  }
+
+  /* Loading Screen Mobile */
+  .loading-logo {
+    font-size: 2rem;
+    margin-bottom: var(--spacing-sm);
+  }
+
+  .loading-subtitle {
+    font-size: 1rem;
+    margin-bottom: var(--spacing-lg);
+  }
+
+  .loading-progress-container {
+    width: 250px;
+  }
+
+  .loading-tips {
+    font-size: 0.8rem;
+    bottom: var(--spacing-lg);
+    max-width: 250px;
+  }
+
+  /* Error Screen Mobile */
+  .error-title {
+    font-size: 1.5rem;
+  }
+
+  .error-message {
+    font-size: 1rem;
+  }
+
+  .error-actions {
+    flex-direction: column;
+    width: 100%;
+    max-width: 300px;
+  }
+
+  .error-button {
+    width: 100%;
+  }
+
+  /* Compatibility Screen Mobile */
+  .compatibility-title {
+    font-size: 1.5rem;
+  }
+
+  .compatibility-message {
+    font-size: 1rem;
+  }
+
+  .browser-links {
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 300px;
+  }
+
+  .browser-link {
+    width: 100%;
+    text-align: center;
+  }
+
+  /* Game HUD Mobile */
+  .game-hud {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-sm);
+  }
+
+  .hud-panel {
+    min-width: auto;
+    padding: var(--spacing-sm);
+  }
+
+  .stat-bar {
+    gap: 2px;
+  }
+
+  .stat-label {
+    font-size: var(--font-size-xs);
+  }
+
+  .stat-value {
+    font-size: var(--font-size-xs);
+  }
+
+  /* Resource Display Mobile */
+  .resource-display {
+    gap: var(--spacing-xs);
+  }
+
+  .resource-item {
+    gap: var(--spacing-xs);
+  }
+
+  .resource-icon {
+    width: 20px;
+    height: 20px;
+    font-size: var(--font-size-base);
+  }
+
+  .resource-value {
+    font-size: var(--font-size-sm);
+  }
+
+  /* Action Bar Mobile */
+  .action-bar {
+    bottom: var(--spacing-sm);
+    left: var(--spacing-sm);
+    right: var(--spacing-sm);
+    transform: none;
+    justify-content: center;
+    padding: var(--spacing-sm);
+    gap: var(--spacing-xs);
+  }
+
+  .action-button {
+    width: var(--touch-target-min);
+    height: var(--touch-target-min);
+  }
+
+  .action-button-tooltip {
+    display: none; /* Hide tooltips on mobile for better performance */
+  }
+
+  /* Inventory Mobile */
+  .inventory {
+    position: fixed;
+    top: auto;
+    bottom: 80px; /* Above action bar */
+    left: var(--spacing-sm);
+    right: var(--spacing-sm);
+    transform: none;
+    min-width: auto;
+    max-width: none;
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+    max-height: 50vh;
+  }
+
+  .inventory-header {
+    padding: var(--spacing-sm);
+  }
+
+  .inventory-title {
+    font-size: var(--font-size-base);
+  }
+
+  .inventory-slots {
+    grid-template-columns: repeat(6, 1fr);
+    gap: 2px;
+    padding: var(--spacing-sm);
+  }
+
+  .inventory-slot {
+    aspect-ratio: 1;
+  }
+
+  .inventory-slot-quantity {
+    font-size: 8px;
+    bottom: 1px;
+    right: 1px;
+    padding: 1px 2px;
+  }
+
+  /* Skill Tree Mobile */
+  .skill-tree {
+    position: fixed;
+    top: auto;
+    bottom: 80px; /* Above action bar */
+    left: var(--spacing-sm);
+    right: var(--spacing-sm);
+    transform: none;
+    min-width: auto;
+    max-width: none;
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+    max-height: 50vh;
+  }
+
+  .skill-tree-header {
+    padding: var(--spacing-sm);
+  }
+
+  .skill-tree-title {
+    font-size: var(--font-size-base);
+  }
+
+  .skill-points {
+    font-size: var(--font-size-xs);
+    padding: 2px var(--spacing-xs);
+  }
+
+  .skill-categories {
+    max-height: 40vh;
+  }
+
+  .skill-category-header {
+    padding: var(--spacing-xs) var(--spacing-sm);
+  }
+
+  .skill-items {
+    padding: var(--spacing-xs);
+  }
+
+  .skill-item {
+    padding: var(--spacing-xs);
+  }
+
+  .skill-icon {
+    width: 28px;
+    height: 28px;
+    font-size: var(--font-size-base);
+  }
+
+  .skill-name {
+    font-size: var(--font-size-xs);
+  }
+
+  .skill-description {
+    font-size: 10px;
+  }
+
+  .skill-level {
+    font-size: 10px;
+  }
+
+  .skill-upgrade-button {
+    padding: 2px var(--spacing-xs);
+    font-size: 10px;
+  }
+
+  /* Modal Mobile */
+  .modal-content {
+    margin: var(--spacing-sm);
+    padding: var(--spacing-lg);
+    border-radius: var(--radius-lg);
+    max-width: calc(100vw - var(--spacing-md));
+    max-height: calc(100vh - var(--spacing-md));
+  }
+
+  .modal-header {
+    margin-bottom: var(--spacing-md);
+    padding-bottom: var(--spacing-sm);
+  }
+
+  .modal-title {
+    font-size: var(--font-size-xl);
+  }
+
+  .modal-close {
+    width: var(--touch-target-min);
+    height: var(--touch-target-min);
+  }
+
+  .modal-body {
+    margin-bottom: var(--spacing-md);
+  }
+
+  .modal-footer {
+    flex-direction: column;
+    gap: var(--spacing-sm);
+    padding-top: var(--spacing-sm);
+  }
+
+  .modal-footer .btn {
+    width: 100%;
+    min-height: var(--touch-target-comfortable);
+  }
+
+  /* Notification Mobile */
+  .notification-container {
+    top: auto;
+    bottom: var(--spacing-md);
+    right: var(--spacing-sm);
+    left: var(--spacing-sm);
+  }
+
+  .notification {
+    min-width: auto;
+    max-width: none;
+  }
+
+  .notification-header {
+    margin-bottom: var(--spacing-xs);
+  }
+
+  .notification-title {
+    font-size: var(--font-size-sm);
+  }
+
+  .notification-message {
+    font-size: var(--font-size-xs);
+  }
+
+  /* Chat Mobile */
+  .chat-container {
+    width: auto;
+    left: var(--spacing-sm);
+    right: var(--spacing-sm);
+    bottom: 80px; /* Above action bar */
+    height: 150px;
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  }
+
+  .chat-messages {
+    padding: var(--spacing-xs);
+  }
+
+  .chat-message {
+    font-size: var(--font-size-xs);
+  }
+
+  .chat-input-container {
+    padding: var(--spacing-xs);
+  }
+
+  .chat-input {
+    padding: var(--spacing-xs);
+    font-size: var(--font-size-xs);
+  }
+
+  /* Minimap Mobile */
+  .minimap {
+    width: 120px;
+    height: 120px;
+    top: var(--spacing-sm);
+    right: var(--spacing-sm);
+  }
+
+  /* Quest Log Mobile */
+  .quest-log {
+    margin: var(--spacing-sm);
+    padding: var(--spacing-lg);
+    min-width: auto;
+    max-width: calc(100vw - var(--spacing-md));
+    max-height: calc(100vh - var(--spacing-md));
+  }
+
+  .quest-log-header {
+    margin-bottom: var(--spacing-md);
+    padding-bottom: var(--spacing-sm);
+  }
+
+  .quest-log-title {
+    font-size: var(--font-size-xl);
+  }
+
+  .quest-categories {
+    flex-wrap: wrap;
+    gap: var(--spacing-xs);
+    margin-bottom: var(--spacing-md);
+  }
+
+  .quest-category-button {
+    padding: var(--spacing-xs) var(--spacing-sm);
+    font-size: var(--font-size-xs);
+    flex: 1;
+    min-width: 80px;
+  }
+
+  .quest-list {
+    gap: var(--spacing-sm);
+  }
+
+  .quest-item {
+    padding: var(--spacing-sm);
+  }
+
+  .quest-item-header {
+    margin-bottom: var(--spacing-xs);
+  }
+
+  .quest-title {
+    font-size: var(--font-size-sm);
+  }
+
+  .quest-reward {
+    font-size: var(--font-size-xs);
+  }
+
+  .quest-description {
+    font-size: var(--font-size-xs);
+    margin-bottom: var(--spacing-xs);
+  }
+
+  .quest-objective {
+    font-size: var(--font-size-xs);
+    gap: var(--spacing-xs);
+  }
+
+  /* Settings Panel Mobile */
+  .settings-panel {
+    margin: var(--spacing-sm);
+    padding: var(--spacing-lg);
+    min-width: auto;
+    max-width: calc(100vw - var(--spacing-md));
+    max-height: calc(100vh - var(--spacing-md));
+  }
+
+  .settings-header {
+    margin-bottom: var(--spacing-md);
+    padding-bottom: var(--spacing-sm);
+  }
+
+  .settings-title {
+    font-size: var(--font-size-xl);
+  }
+
+  .settings-sections {
+    gap: var(--spacing-lg);
+  }
+
+  .settings-section {
+    padding: var(--spacing-md);
+  }
+
+  .settings-section-title {
+    font-size: var(--font-size-lg);
+    margin-bottom: var(--spacing-sm);
+    padding-bottom: var(--spacing-xs);
+  }
+
+  .settings-item {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-sm) 0;
+  }
+
+  .settings-label {
+    text-align: center;
+  }
+
+  .settings-label-text {
+    font-size: var(--font-size-sm);
+  }
+
+  .settings-label-description {
+    font-size: var(--font-size-xs);
+  }
+
+  .settings-control {
+    justify-content: center;
+  }
+
+  /* Toggle Switch Mobile */
+  .toggle-switch {
+    width: 56px;
+    height: 28px;
+  }
+
+  .toggle-switch-slider {
+    width: 24px;
+    height: 24px;
+    top: 2px;
+    left: 2px;
+  }
+
+  .toggle-switch.active .toggle-switch-slider {
+    transform: translateX(28px);
+  }
+
+  /* Slider Mobile */
+  .slider {
+    width: 100%;
+    height: 8px;
+  }
+
+  .slider-handle {
+    width: 20px;
+    height: 20px;
+  }
+
+  /* Select Mobile */
+  .select {
+    width: 100%;
+    padding: var(--spacing-sm);
+    font-size: var(--font-size-sm);
+  }
+
+  /* Button Mobile */
+  .btn {
+    min-height: var(--touch-target-min);
+    padding: var(--spacing-sm) var(--spacing-md);
+    font-size: var(--font-size-sm);
+  }
+
+  .btn-sm {
+    min-height: 36px;
+    padding: var(--spacing-xs) var(--spacing-sm);
+    font-size: var(--font-size-xs);
+  }
+
+  .btn-lg {
+    min-height: var(--touch-target-comfortable);
+    padding: var(--spacing-md) var(--spacing-lg);
+    font-size: var(--font-size-base);
+  }
+
+  /* Input Mobile */
+  .input {
+    padding: var(--spacing-sm);
+    font-size: 16px; /* Prevents zoom on iOS */
+    min-height: var(--touch-target-min);
+  }
+
+  /* Tabs Mobile */
+  .tab-list {
+    flex-wrap: wrap;
+    gap: var(--spacing-xs);
+  }
+
+  .tab-button {
+    padding: var(--spacing-sm) var(--spacing-md);
+    font-size: var(--font-size-sm);
+    flex: 1;
+    min-width: 80px;
+    text-align: center;
+  }
+
+  /* Progress Mobile */
+  .progress {
+    height: 6px;
+  }
+
+  /* Damage Numbers Mobile */
+  .damage-number {
+    font-size: var(--font-size-base);
+  }
+
+  .damage-number.critical {
+    font-size: var(--font-size-xl);
+  }
+
+  /* Loot Mobile */
+  .loot-icon {
+    font-size: var(--font-size-xl);
+  }
+
+  /* Touch-specific optimizations */
+  * {
+    -webkit-tap-highlight-color: rgba(52, 152, 219, 0.3);
+  }
+
+  .btn,
+  .action-button,
+  .inventory-slot,
+  .modal-close,
+  .notification-close,
+  .tab-button,
+  .quest-item,
+  .skill-item {
+    touch-action: manipulation;
+  }
+
+  /* Prevent double-tap zoom */
+  .action-bar,
+  .inventory,
+  .skill-tree,
+  .chat-container,
+  .quest-log,
+  .settings-panel {
+    touch-action: pan-x pan-y;
+  }
+
+  /* Mobile scrolling optimizations */
+  .inventory-slots,
+  .skill-categories,
+  .quest-list,
+  .chat-messages,
+  .modal-content {
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
+  }
+
+  /* Mobile hover states (touch feedback) */
+  .btn:active,
+  .action-button:active,
+  .inventory-slot:active,
+  .modal-close:active,
+  .notification-close:active,
+  .tab-button:active,
+  .quest-item:active,
+  .skill-item:active {
+    transform: scale(0.95);
+    opacity: 0.8;
+  }
+}
+
+/* Mobile Small (320px - 480px) */
+@media (max-width: 480px) {
+  /* Even smaller base font */
+  html {
+    font-size: 13px;
+  }
+
+  /* Loading Screen Small Mobile */
+  .loading-logo {
+    font-size: 1.5rem;
+  }
+
+  .loading-subtitle {
+    font-size: 0.9rem;
+  }
+
+  .loading-progress-container {
+    width: 200px;
+  }
+
+  .loading-stats {
+    font-size: 0.8rem;
+  }
+
+  .loading-tips {
+    font-size: 0.75rem;
+    max-width: 200px;
+  }
+
+  /* Game HUD Small Mobile */
+  .game-hud {
+    padding: var(--spacing-xs);
+  }
+
+  .hud-panel {
+    padding: var(--spacing-xs);
+  }
+
+  /* Action Bar Small Mobile */
+  .action-bar {
+    padding: var(--spacing-xs);
+    gap: 2px;
+  }
+
+  .action-button {
+    width: 40px;
+    height: 40px;
+    font-size: var(--font-size-sm);
+  }
+
+  /* Inventory Small Mobile */
+  .inventory-slots {
+    grid-template-columns: repeat(5, 1fr);
+  }
+
+  /* Skill Tree Small Mobile */
+  .skill-icon {
+    width: 24px;
+    height: 24px;
+    font-size: var(--font-size-sm);
+  }
+
+  /* Modal Small Mobile */
+  .modal-content {
+    margin: var(--spacing-xs);
+    padding: var(--spacing-md);
+  }
+
+  .modal-title {
+    font-size: var(--font-size-lg);
+  }
+
+  /* Chat Small Mobile */
+  .chat-container {
+    height: 120px;
+    bottom: 70px;
+  }
+
+  /* Minimap Small Mobile */
+  .minimap {
+    width: 100px;
+    height: 100px;
+  }
+
+  /* Quest Log Small Mobile */
+  .quest-log {
+    padding: var(--spacing-md);
+  }
+
+  .quest-log-title {
+    font-size: var(--font-size-lg);
+  }
+
+  /* Settings Small Mobile */
+  .settings-panel {
+    padding: var(--spacing-md);
+  }
+
+  .settings-title {
+    font-size: var(--font-size-lg);
+  }
+
+  .settings-section-title {
+    font-size: var(--font-size-base);
+  }
+
+  /* Buttons Small Mobile */
+  .btn {
+    padding: var(--spacing-xs) var(--spacing-sm);
+    font-size: var(--font-size-xs);
+  }
+
+  .btn-lg {
+    padding: var(--spacing-sm) var(--spacing-md);
+    font-size: var(--font-size-sm);
+  }
+
+  /* Responsive text adjustments */
+  .text-responsive {
+    font-size: clamp(0.75rem, 3vw, 1rem);
+  }
+
+  .heading-responsive {
+    font-size: clamp(1rem, 5vw, 1.5rem);
+  }
+}
+
+/* Ultra Small Mobile (below 320px) */
+@media (max-width: 320px) {
+  html {
+    font-size: 12px;
+  }
+
+  .loading-logo {
+    font-size: 1.25rem;
+  }
+
+  .action-bar {
+    gap: 1px;
+  }
+
+  .action-button {
+    width: 36px;
+    height: 36px;
+  }
+
+  .inventory-slots {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .minimap {
+    display: none; /* Hide on very small screens */
+  }
+}
+
+/* Mobile Landscape Specific */
+@media (max-height: 500px) and (orientation: landscape) {
+  .game-hud {
+    flex-direction: row;
+    align-items: center;
+    position: absolute;
+    top: var(--spacing-xs);
+    left: var(--spacing-xs);
+    right: var(--spacing-xs);
+    bottom: auto;
+  }
+
+  .hud-panel {
+    flex: 1;
+    max-width: 200px;
+  }
+
+  .action-bar {
+    position: fixed;
+    bottom: var(--spacing-xs);
+    left: 50%;
+    transform: translateX(-50%);
+    top: auto;
+  }
+
+  .inventory,
+  .skill-tree,
+  .chat-container {
+    position: fixed;
+    top: 50px;
+    bottom: 60px;
+    left: var(--spacing-xs);
+    right: var(--spacing-xs);
+    max-height: calc(100vh - 110px);
+  }
+
+  .quest-log,
+  .settings-panel {
+    max-height: calc(100vh - var(--spacing-md));
+  }
+
+  .loading-tips {
+    display: none; /* Hide tips in landscape */
+  }
+}
+
+/* High DPI Mobile Devices */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) and (max-width: 768px) {
+  .inventory-slot,
+  .skill-icon,
+  .action-button {
+    image-rendering: auto;
+  }
+
+  .loading-progress-bar::after {
+    animation-duration: 1.5s; /* Slower shimmer on high DPI */
+  }
+}
+
+/* Mobile Performance Optimizations */
+@media (max-width: 768px) {
+  /* Reduce animations on mobile for better performance */
+  .animate-shimmer,
+  .animate-glow,
+  .animate-pulse {
+    animation-duration: 3s;
+  }
+
+  .loading-progress-bar::after {
+    animation-duration: 3s;
+  }
+
+  /* Disable some hover effects on touch devices */
+  @media (hover: none) {
+    .btn:hover,
+    .action-button:hover,
+    .inventory-slot:hover,
+    .quest-item:hover,
+    .skill-item:hover {
+      transform: none;
+    }
+
+    .btn:hover::before {
+      width: 0;
+      height: 0;
+    }
+  }
+
+  /* Optimize backdrop filters for mobile */
+  .glass,
+  .glass-md,
+  .glass-lg {
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+  }
+
+  /* Simplified shadows for mobile */
+  .shadow-xl,
+  .shadow-2xl {
+    box-shadow: var(--shadow-lg);
+  }
+}
+
+/* iOS Specific Fixes */
+@supports (-webkit-touch-callout: none) {
+  .modal-content {
+    -webkit-transform: translateZ(0);
+  }
+
+  .inventory,
+  .skill-tree,
+  .chat-container {
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Prevent iOS elastic scrolling */
+  body {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+  }
+}
+
+/* Android Specific Fixes */
+@media screen and (-webkit-min-device-pixel-ratio: 0) and (min-resolution: .001dpcm) {
+  .btn,
+  .action-button {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* Fix for Android Chrome viewport height */
+  .game-ui {
+    height: 100vh;
+    height: -webkit-fill-available;
+  }
+}
+
+/* PWA Mobile Specific */
+@media (display-mode: standalone) and (max-width: 768px) {
+  .game-hud {
+    padding-top: env(safe-area-inset-top, var(--spacing-sm));
+    padding-left: env(safe-area-inset-left, var(--spacing-sm));
+    padding-right: env(safe-area-inset-right, var(--spacing-sm));
+  }
+
+  .action-bar {
+    bottom: calc(env(safe-area-inset-bottom, var(--spacing-sm)) + var(--spacing-sm));
+  }
+
+  .inventory,
+  .skill-tree,
+  .chat-container {
+    bottom: calc(env(safe-area-inset-bottom, var(--spacing-sm)) + 80px);
+  }
+}
+
+/* Dark mode optimizations for mobile OLED screens */
+@media (max-width: 768px) and (prefers-color-scheme: dark) {
+  :root {
+    --dark-bg: #000000;
+    --darker-bg: #000000;
+    --glass-bg: rgba(0, 0, 0, 0.3);
+  }
+
+  body {
+    background-color: #000000;
+    background-image: none;
+  }
+}

@@ -1,0 +1,952 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Basic Meta Tags -->
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="description" content="Kelvor - A Runescape-inspired idle RPG game. Embark on epic adventures, battle monsters, and build your legacy in this immersive idle gaming experience." />
+  <meta name="keywords" content="game, rpg, idle, runescape, browser, typescript, phaser, fantasy, adventure, mmorpg, incremental" />
+  <meta name="author" content="Kelvor Game Studios" />
+  <meta name="robots" content="index, follow" />
+  <meta name="language" content="English" />
+  <meta name="revisit-after" content="7 days" />
+
+  <!-- Performance and Optimization Meta Tags -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="referrer" content="no-referrer-when-downgrade" />
+  <meta name="format-detection" content="telephone=no" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Kelvor" />
+
+  <!-- Preconnect for Performance -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="dns-prefetch" href="//fonts.googleapis.com" />
+  <link rel="dns-prefetch" href="//fonts.gstatic.com" />
+
+  <!-- Font Loading for Game UI -->
+  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'" />
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" /></noscript>
+
+  <!-- PWA Meta Tags -->
+  <meta name="theme-color" content="#2c3e50" />
+  <meta name="application-name" content="Kelvor - Idle RPG" />
+  <meta name="msapplication-TileColor" content="#2c3e50" />
+  <meta name="msapplication-config" content="/browserconfig.xml" />
+
+  <!-- Open Graph / Social Media Meta Tags -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Kelvor - Idle RPG | Epic Adventures Await" />
+  <meta property="og:description" content="Embark on an epic idle RPG adventure inspired by classic MMORPGs. Battle monsters, collect loot, and build your legacy!" />
+  <meta property="og:image" content="/og-image.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:url" content="/" />
+  <meta property="og:site_name" content="Kelvor" />
+  <meta property="og:locale" content="en_US" />
+
+  <!-- Twitter Card Meta Tags -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Kelvor - Idle RPG" />
+  <meta name="twitter:description" content="Embark on an epic idle RPG adventure inspired by classic MMORPGs!" />
+  <meta name="twitter:image" content="/og-image.png" />
+  <meta name="twitter:creator" content="@kelvorgame" />
+  <meta name="twitter:site" content="@kelvorgame" />
+
+  <!-- Icons and Favicon -->
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+  <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#2c3e50" />
+  <link rel="manifest" href="/manifest.webmanifest" />
+
+  <title>Kelvor - Idle RPG | Epic Adventures Await</title>
+
+  <!-- Critical CSS for immediate rendering -->
+  <style>
+    /* Essential styles for loading screen - extracted from main styles.css */
+    :root {
+      --primary-color: #2c3e50;
+      --secondary-color: #3498db;
+      --success-color: #27ae60;
+      --warning-color: #f39c12;
+      --danger-color: #e74c3c;
+      --dark-bg: #1a1a1a;
+      --darker-bg: #0f0f0f;
+      --light-text: #ecf0f1;
+      --muted-text: #95a5a6;
+      --border-color: #34495e;
+      --loading-gradient-start: #667eea;
+      --loading-gradient-end: #764ba2;
+      --glass-bg: rgba(255, 255, 255, 0.05);
+      --glass-border: rgba(255, 255, 255, 0.1);
+      --shadow-color: rgba(0, 0, 0, 0.5);
+      --z-loading: 3000;
+      --z-error: 4000;
+      --font-family-primary: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+      --font-family-heading: 'Cinzel', 'Georgia', 'Times New Roman', serif;
+      --spacing-md: 1rem;
+      --spacing-lg: 1.5rem;
+      --spacing-xl: 2rem;
+      --radius-md: 0.5rem;
+      --radius-lg: 0.75rem;
+      --radius-xl: 1rem;
+      --font-size-sm: 0.875rem;
+      --font-size-base: 1rem;
+      --font-size-lg: 1.125rem;
+      --font-size-xl: 1.25rem;
+      --font-size-2xl: 1.5rem;
+      --font-size-3xl: 1.875rem;
+      --font-size-4xl: 2.25rem;
+      --transition-normal: 0.3s ease;
+    }
+
+    *, *::before, *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      font-size: 16px;
+      scroll-behavior: smooth;
+      -webkit-text-size-adjust: 100%;
+      -ms-text-size-adjust: 100%;
+      text-rendering: optimizeLegibility;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    body {
+      font-family: var(--font-family-primary);
+      font-weight: 400;
+      line-height: 1.6;
+      color: var(--light-text);
+      background-color: var(--dark-bg);
+      background-image:
+        radial-gradient(circle at 20% 50%, rgba(102, 126, 234, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(118, 75, 162, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 40% 80%, rgba(46, 204, 113, 0.05) 0%, transparent 50%),
+        linear-gradient(135deg, var(--dark-bg) 0%, var(--darker-bg) 100%);
+      background-attachment: fixed;
+      overflow: hidden;
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      min-height: 100vh;
+    }
+
+    #app {
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+      overflow: hidden;
+      background: var(--darker-bg);
+    }
+
+    #game-container {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: var(--darker-bg);
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+    }
+
+    .loading-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, var(--loading-gradient-start) 0%, var(--loading-gradient-end) 100%);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: var(--z-loading);
+      transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1), transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+      transform: scale(1);
+    }
+
+    .loading-screen.hidden {
+      opacity: 0;
+      transform: scale(1.1);
+      pointer-events: none;
+    }
+
+    .loading-content {
+      text-align: center;
+    }
+
+    .loading-logo {
+      font-family: var(--font-family-heading);
+      font-size: clamp(2rem, 5vw, 4rem);
+      font-weight: 700;
+      margin-bottom: var(--spacing-md);
+      text-shadow: 3px 3px 6px var(--shadow-color);
+      background: linear-gradient(45deg, #ffffff, #f0f0f0);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      letter-spacing: 2px;
+    }
+
+    .loading-subtitle {
+      font-family: var(--font-family-primary);
+      font-size: clamp(0.9rem, 2vw, 1.2rem);
+      font-weight: 300;
+      margin-bottom: var(--spacing-xl);
+      opacity: 0.9;
+      text-shadow: 1px 1px 2px var(--shadow-color);
+    }
+
+    .loading-progress-container {
+      width: clamp(200px, 40vw, 400px);
+      margin-bottom: var(--spacing-md);
+    }
+
+    .loading-progress {
+      width: 100%;
+      height: 12px;
+      background: rgba(255, 255, 255, 0.15);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      position: relative;
+      box-shadow: inset 0 2px 4px var(--shadow-color);
+    }
+
+    .loading-progress-bar {
+      height: 100%;
+      background: linear-gradient(90deg, var(--success-color), #2ecc71, #27ae60);
+      width: 0%;
+      transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+      border-radius: var(--radius-md);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .loading-progress-bar::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+      animation: shimmer 2s infinite;
+    }
+
+    .loading-stats {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: clamp(200px, 40vw, 400px);
+      font-size: var(--font-size-sm);
+      opacity: 0.8;
+      margin-top: 0.5rem;
+    }
+
+    .loading-tips {
+      position: absolute;
+      bottom: var(--spacing-xl);
+      text-align: center;
+      font-style: italic;
+      opacity: 0.7;
+      font-size: var(--font-size-sm);
+      max-width: 300px;
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    .error-screen, .compatibility-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: var(--dark-bg);
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: var(--z-error);
+      padding: var(--spacing-xl);
+      text-align: center;
+    }
+
+    .error-screen.show, .compatibility-screen.show {
+      display: flex;
+    }
+
+    .error-title, .compatibility-title {
+      font-family: var(--font-family-heading);
+      font-size: var(--font-size-2xl);
+      color: var(--danger-color);
+      margin-bottom: var(--spacing-md);
+    }
+
+    .error-message, .compatibility-message {
+      font-size: var(--font-size-lg);
+      color: var(--light-text);
+      margin-bottom: var(--spacing-xl);
+      max-width: 600px;
+      line-height: 1.6;
+    }
+
+    .error-icon {
+      font-size: var(--font-size-4xl);
+      margin-bottom: var(--spacing-md);
+    }
+
+    .error-actions, .browser-links {
+      display: flex;
+      gap: var(--spacing-md);
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .error-button, .browser-link {
+      padding: var(--spacing-md) var(--spacing-xl);
+      background: var(--success-color);
+      color: white;
+      text-decoration: none;
+      border-radius: var(--radius-md);
+      font-weight: 500;
+      transition: var(--transition-normal);
+      border: none;
+      cursor: pointer;
+      display: inline-block;
+    }
+
+    .error-button:hover, .browser-link:hover {
+      background: #229954;
+      transform: translateY(-2px);
+    }
+
+    .error-button.secondary {
+      background: var(--secondary-color);
+    }
+
+    .error-button.secondary:hover {
+      background: #2980b9;
+    }
+
+    .offline-indicator {
+      position: fixed;
+      top: var(--spacing-md);
+      right: var(--spacing-md);
+      background: var(--warning-color);
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      font-size: var(--font-size-sm);
+      font-weight: 500;
+      z-index: 1500;
+      display: none;
+    }
+
+    .offline-indicator.show {
+      display: block;
+    }
+
+    .fps-counter {
+      position: fixed;
+      top: var(--spacing-md);
+      left: var(--spacing-md);
+      background: rgba(0, 0, 0, 0.7);
+      color: var(--success-color);
+      padding: 0.5rem;
+      border-radius: var(--radius-md);
+      font-family: 'Courier New', monospace;
+      font-size: var(--font-size-sm);
+      z-index: 100;
+      display: none;
+    }
+
+    .fps-counter.show {
+      display: block;
+    }
+
+    canvas {
+      display: block;
+      max-width: 100%;
+      max-height: 100%;
+      border-radius: var(--radius-lg);
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+      image-rendering: crisp-edges;
+      image-rendering: pixelated;
+      background: var(--darker-bg);
+    }
+
+    @keyframes shimmer {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(100%); }
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 0.7; }
+      50% { opacity: 1; }
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-5px); }
+      75% { transform: translateX(5px); }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes slideInRight {
+      from {
+        transform: translateX(100%);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+  </style>
+
+  <!-- Main Stylesheets -->
+  <link rel="stylesheet" href="/src/css/styles.css" />
+  <link rel="stylesheet" href="/src/css/animations.css" />
+  <link rel="stylesheet" href="/src/css/components.css" />
+  <link rel="stylesheet" href="/src/css/mobile.css" />
+  <link rel="stylesheet" href="/src/css/accessibility.css" />
+</head>
+<body>
+  <div id="app" role="application" aria-label="Kelvor Idle RPG Game">
+    <!-- Enhanced Loading Screen -->
+    <div id="loading-screen" class="loading-screen" role="status" aria-live="polite" aria-label="Loading game">
+      <div class="loading-content">
+        <div class="loading-logo">⚔️ KELVOR</div>
+        <div class="loading-subtitle">An Epic Idle RPG Adventure</div>
+
+        <div class="loading-progress-container">
+          <div class="loading-progress" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+            <div id="loading-progress-bar" class="loading-progress-bar"></div>
+          </div>
+          <div class="loading-stats">
+            <span id="loading-percentage">0%</span>
+            <span id="loading-status">Initializing...</span>
+          </div>
+        </div>
+      </div>
+
+      <div id="loading-tips" class="loading-tips">
+        💡 Tip: Your progress is automatically saved even when you're away!
+      </div>
+    </div>
+
+    <!-- Browser Compatibility Screen -->
+    <div id="compatibility-screen" class="compatibility-screen" role="alertdialog" aria-labelledby="compatibility-title" aria-describedby="compatibility-message">
+      <div class="compatibility-title">🌐 Browser Compatibility</div>
+      <div id="compatibility-message" class="compatibility-message">
+        Your browser may not support all features required for the best gaming experience. Please consider using a modern browser like Chrome, Firefox, Safari, or Edge.
+      </div>
+      <div class="browser-links">
+        <a href="https://www.google.com/chrome/" target="_blank" rel="noopener noreferrer" class="browser-link">Download Chrome</a>
+        <a href="https://www.mozilla.org/firefox/" target="_blank" rel="noopener noreferrer" class="browser-link">Download Firefox</a>
+        <a href="https://www.apple.com/safari/" target="_blank" rel="noopener noreferrer" class="browser-link">Download Safari</a>
+        <a href="https://www.microsoft.com/edge/" target="_blank" rel="noopener noreferrer" class="browser-link">Download Edge</a>
+      </div>
+    </div>
+
+    <!-- Enhanced Error Screen -->
+    <div id="error-screen" class="error-screen" role="alert" aria-labelledby="error-title" aria-describedby="error-message">
+      <div class="error-icon">⚠️</div>
+      <div id="error-title" class="error-title">Oops! Something went wrong</div>
+      <div id="error-message" class="error-message">
+        We encountered an unexpected error while loading the game. Our team has been notified and is working to fix this issue.
+      </div>
+      <div id="error-details" class="error-details" style="display: none;"></div>
+      <div class="error-actions">
+        <button class="error-button" onclick="location.reload()" aria-label="Reload the game">
+          🔄 Reload Game
+        </button>
+        <button class="error-button secondary" onclick="clearCacheAndReload()" aria-label="Clear cache and reload">
+          🗑️ Clear Cache & Reload
+        </button>
+        <a href="mailto:support@kelvor.com" class="error-button secondary" aria-label="Contact support">
+          📧 Contact Support
+        </a>
+      </div>
+    </div>
+
+    <!-- Offline Support Indicator -->
+    <div id="offline-indicator" class="offline-indicator" role="status" aria-live="polite">
+      📱 You're playing offline - Some features may be limited
+    </div>
+
+    <!-- FPS Counter (for development) -->
+    <div id="fps-counter" class="fps-counter" aria-label="Frames per second counter">
+      FPS: <span id="fps-value">60</span>
+    </div>
+
+    <!-- Game Container -->
+    <main id="game-container" role="main" aria-label="Game area">
+      <!-- Phaser game will be rendered here -->
+      <canvas id="game-canvas" style="display: none;" aria-label="Game canvas"></canvas>
+    </main>
+  </div>
+
+  <!-- Main Game Script -->
+  <script type="module" src="/src/main.ts"></script>
+
+  <!-- Enhanced Application JavaScript -->
+  <script>
+    // Game state and configuration
+    const GameState = {
+      isLoaded: false,
+      isLoading: true,
+      hasError: false,
+      isOnline: navigator.onLine,
+      performanceMode: false,
+      debugMode: false
+    };
+
+    // Loading tips for better UX
+    const loadingTips = [
+      "💡 Tip: Your progress is automatically saved even when you're away!",
+      "⚔️ Tip: Upgrade your weapons to defeat stronger monsters!",
+      "🏆 Tip: Complete achievements to earn special rewards!",
+      "💰 Tip: Save your gold for powerful equipment upgrades!",
+      "🗺️ Tip: Explore new areas to discover rare treasures!",
+      "⚡ Tip: Use special abilities strategically in battles!",
+      "🎯 Tip: Focus on one skill at a time for faster progression!",
+      "🛡️ Tip: Better armor means longer survival in dangerous areas!"
+    ];
+
+    // Enhanced browser compatibility checking
+    function checkBrowserCompatibility() {
+      const issues = [];
+
+      // Check for required APIs
+      if (!window.requestAnimationFrame) {
+        issues.push("requestAnimationFrame not supported");
+      }
+
+      if (!window.localStorage) {
+        issues.push("localStorage not supported");
+      }
+
+      if (!window.WebGLRenderingContext) {
+        issues.push("WebGL not supported");
+      }
+
+      // Check for modern JavaScript features
+      try {
+        new Function('(a = 0) => a');
+      } catch (e) {
+        issues.push("ES6 arrow functions not supported");
+      }
+
+      // Check for Canvas support
+      const canvas = document.createElement('canvas');
+      if (!canvas || !canvas.getContext) {
+        issues.push("Canvas not supported");
+      }
+
+      // Check for Service Worker support
+      if (!('serviceWorker' in navigator)) {
+        console.warn("Service Worker not supported - offline features limited");
+      }
+
+      return issues;
+    }
+
+    // Enhanced loading progress management
+    class LoadingManager {
+      constructor() {
+        this.progress = 0;
+        this.status = "Initializing...";
+        this.tips = [...loadingTips];
+        this.currentTipIndex = 0;
+        this.loadingInterval = null;
+        this.progressBar = document.getElementById('loading-progress-bar');
+        this.percentageText = document.getElementById('loading-percentage');
+        this.statusText = document.getElementById('loading-status');
+        this.tipsElement = document.getElementById('loading-tips');
+      }
+
+      start() {
+        this.showRandomTip();
+        this.simulateLoading();
+      }
+
+      showRandomTip() {
+        if (this.tipsElement && this.tips.length > 0) {
+          this.currentTipIndex = (this.currentTipIndex + 1) % this.tips.length;
+          this.tipsElement.textContent = this.tips[this.currentTipIndex];
+        }
+      }
+
+      updateProgress(progress, status) {
+        this.progress = Math.min(100, Math.max(0, progress));
+        this.status = status || this.status;
+
+        if (this.progressBar) {
+          this.progressBar.style.width = `${this.progress}%`;
+        }
+
+        if (this.percentageText) {
+          this.percentageText.textContent = `${Math.round(this.progress)}%`;
+        }
+
+        if (this.statusText) {
+          this.statusText.textContent = this.status;
+        }
+
+        // Update ARIA attributes
+        const progressContainer = document.querySelector('.loading-progress');
+        if (progressContainer) {
+          progressContainer.setAttribute('aria-valuenow', Math.round(this.progress));
+        }
+      }
+
+      simulateLoading() {
+        let progress = 0;
+        const stages = [
+          { progress: 20, status: "Loading game assets...", delay: 800 },
+          { progress: 40, status: "Initializing game engine...", delay: 600 },
+          { progress: 60, status: "Loading game world...", delay: 1000 },
+          { progress: 80, status: "Preparing UI elements...", delay: 400 },
+          { progress: 95, status: "Almost ready...", delay: 300 }
+        ];
+
+        let currentStage = 0;
+
+        this.loadingInterval = setInterval(() => {
+          if (currentStage < stages.length) {
+            const stage = stages[currentStage];
+            progress = Math.min(progress + 2, stage.progress);
+
+            this.updateProgress(progress, stage.status);
+
+            if (progress >= stage.progress) {
+              currentStage++;
+              this.showRandomTip();
+            }
+          } else {
+            progress = Math.min(progress + 1, 99);
+            this.updateProgress(progress, "Finalizing...");
+
+            if (progress >= 99) {
+              clearInterval(this.loadingInterval);
+
+              // Wait for game to actually load
+              setTimeout(() => {
+                this.complete();
+              }, 1000);
+            }
+          }
+        }, 50);
+      }
+
+      complete() {
+        this.updateProgress(100, "Ready!");
+
+        setTimeout(() => {
+          const loadingScreen = document.getElementById('loading-screen');
+          if (loadingScreen) {
+            loadingScreen.classList.add('hidden');
+          }
+          GameState.isLoading = false;
+          GameState.isLoaded = true;
+        }, 500);
+      }
+
+      error(message) {
+        clearInterval(this.loadingInterval);
+        this.updateProgress(0, "Loading failed");
+        showError(message);
+      }
+    }
+
+    // Error handling and display
+    function showError(error, details = null) {
+      GameState.hasError = true;
+      GameState.isLoading = false;
+
+      const errorScreen = document.getElementById('error-screen');
+      const errorTitle = document.getElementById('error-title');
+      const errorMessage = document.getElementById('error-message');
+      const errorDetails = document.getElementById('error-details');
+      const loadingScreen = document.getElementById('loading-screen');
+
+      if (errorTitle) {
+        errorTitle.textContent = error?.name || 'Loading Error';
+      }
+
+      if (errorMessage) {
+        errorMessage.textContent = error?.message || 'An unexpected error occurred while loading the game.';
+      }
+
+      if (errorDetails && details) {
+        errorDetails.textContent = details;
+        errorDetails.style.display = 'block';
+      }
+
+      if (loadingScreen) {
+        loadingScreen.classList.add('hidden');
+      }
+
+      if (errorScreen) {
+        errorScreen.classList.add('show');
+      }
+    }
+
+    // Clear cache and reload
+    function clearCacheAndReload() {
+      if ('caches' in window) {
+        caches.keys().then(function(names) {
+          names.forEach(function(name) {
+            caches.delete(name);
+          });
+        }).then(function() {
+          localStorage.clear();
+          sessionStorage.clear();
+          location.reload(true);
+        });
+      } else {
+        localStorage.clear();
+        sessionStorage.clear();
+        location.reload(true);
+      }
+    }
+
+    // Performance monitoring
+    class PerformanceMonitor {
+      constructor() {
+        this.fps = 60;
+        this.lastTime = performance.now();
+        this.frames = 0;
+        this.fpsCounter = document.getElementById('fps-counter');
+        this.fpsValue = document.getElementById('fps-value');
+      }
+
+      start() {
+        if (GameState.debugMode && this.fpsCounter) {
+          this.fpsCounter.classList.add('show');
+          this.update();
+        }
+      }
+
+      update() {
+        this.frames++;
+        const currentTime = performance.now();
+
+        if (currentTime >= this.lastTime + 1000) {
+          this.fps = Math.round((this.frames * 1000) / (currentTime - this.lastTime));
+          this.frames = 0;
+          this.lastTime = currentTime;
+
+          if (this.fpsValue) {
+            this.fpsValue.textContent = this.fps;
+          }
+
+          // Adjust performance mode based on FPS
+          if (this.fps < 30 && !GameState.performanceMode) {
+            GameState.performanceMode = true;
+            console.log('Performance mode enabled due to low FPS');
+          } else if (this.fps > 50 && GameState.performanceMode) {
+            GameState.performanceMode = false;
+            console.log('Performance mode disabled');
+          }
+        }
+
+        if (GameState.debugMode) {
+          requestAnimationFrame(() => this.update());
+        }
+      }
+    }
+
+    // Offline support management
+    function setupOfflineSupport() {
+      const offlineIndicator = document.getElementById('offline-indicator');
+
+      function updateOnlineStatus() {
+        GameState.isOnline = navigator.onLine;
+
+        if (offlineIndicator) {
+          if (!navigator.onLine) {
+            offlineIndicator.classList.add('show');
+          } else {
+            offlineIndicator.classList.remove('show');
+          }
+        }
+
+        // Show notification when coming back online
+        if (navigator.onLine && !GameState.isOnline) {
+          console.log('Back online - game features restored');
+        }
+      }
+
+      window.addEventListener('online', updateOnlineStatus);
+      window.addEventListener('offline', updateOnlineStatus);
+
+      updateOnlineStatus();
+    }
+
+    // Service Worker registration for PWA
+    function registerServiceWorker() {
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', function() {
+          navigator.serviceWorker.register('/sw.js', {
+            scope: '/'
+          }).then(function(registration) {
+            console.log('Service Worker registered successfully:', registration.scope);
+
+            // Check for updates
+            registration.addEventListener('updatefound', function() {
+              const newWorker = registration.installing;
+              if (newWorker) {
+                newWorker.addEventListener('statechange', function() {
+                  if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                    // New content is available
+                    console.log('New game version available - refresh to update');
+                  }
+                });
+              }
+            });
+          }).catch(function(error) {
+            console.warn('Service Worker registration failed:', error);
+          });
+        });
+      }
+    }
+
+    // Initialize application
+    document.addEventListener('DOMContentLoaded', function() {
+      // Check browser compatibility
+      const compatibilityIssues = checkBrowserCompatibility();
+      if (compatibilityIssues.length > 0) {
+        console.warn('Browser compatibility issues:', compatibilityIssues);
+
+        // Show compatibility warning for serious issues
+        const seriousIssues = compatibilityIssues.filter(issue =>
+          issue.includes('WebGL') || issue.includes('Canvas') || issue.includes('requestAnimationFrame')
+        );
+
+        if (seriousIssues.length > 0) {
+          document.getElementById('compatibility-screen').classList.add('show');
+          return;
+        }
+      }
+
+      // Initialize systems
+      const loadingManager = new LoadingManager();
+      const performanceMonitor = new PerformanceMonitor();
+
+      // Start loading
+      loadingManager.start();
+      performanceMonitor.start();
+
+      // Setup offline support
+      setupOfflineSupport();
+
+      // Register service worker
+      registerServiceWorker();
+
+      // Enable debug mode in development
+      if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+        GameState.debugMode = true;
+        console.log('Debug mode enabled');
+      }
+
+      // Global error handling
+      window.addEventListener('error', function(event) {
+        console.error('Global error:', event.error);
+        const errorDetails = `
+          Error: ${event.error?.message || 'Unknown error'}
+          File: ${event.filename || 'Unknown'}
+          Line: ${event.lineno || 'Unknown'}
+          Column: ${event.colno || 'Unknown'}
+          Timestamp: ${new Date().toISOString()}
+        `;
+        showError(event.error, errorDetails);
+      });
+
+      // Unhandled promise rejection handling
+      window.addEventListener('unhandledrejection', function(event) {
+        console.error('Unhandled promise rejection:', event.reason);
+        const errorDetails = `
+          Promise Rejection: ${event.reason?.message || 'Unknown rejection'}
+          Timestamp: ${new Date().toISOString()}
+        `;
+        showError(event.reason, errorDetails);
+      });
+
+      // Handle visibility changes (pause/resume game)
+      document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+          console.log('Game paused - tab not visible');
+          // Pause game logic here
+        } else {
+          console.log('Game resumed - tab visible');
+          // Resume game logic here
+        }
+      });
+
+      // Handle page unload
+      window.addEventListener('beforeunload', function(event) {
+        if (GameState.isLoaded && !GameState.hasError) {
+          // Save game state
+          console.log('Saving game state before unload');
+        }
+      });
+
+      // Expose game state for debugging
+      if (GameState.debugMode) {
+        window.KelvorGame = {
+          GameState,
+          loadingManager,
+          performanceMonitor,
+          clearCacheAndReload,
+          showError
+        };
+      }
+    });
+
+    // Vite HMR support for development
+    if (import.meta.hot) {
+      import.meta.hot.accept(() => {
+        console.log('Hot module replacement accepted');
+        location.reload();
+      });
+    }
+  </script>
+</body>
+</html>
