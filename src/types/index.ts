@@ -323,6 +323,17 @@ export interface GameEventMap {
   'woodcutting:tree_chopped': { treeId: string; logCount: number; experience: number };
   'woodcutting:tool_equipped': { toolId: string };
   'achievement:unlocked': { achievementId: string };
+  // Authentication events
+  'auth:login': { user: User; isNewUser: boolean };
+  'auth:logout': { reason?: string };
+  'auth:token_refresh': { success: boolean };
+  'auth:error': { error: AuthError };
+  'auth:session_expired': { reason: string };
+  'auth:user_updated': { user: User };
+  // Cloud save events
+  'cloud_save:sync_started': { userId: string };
+  'cloud_save:sync_completed': { success: boolean; saveId?: string };
+  'cloud_save:sync_failed': { error: string };
 }
 
 export type GameEventType = keyof GameEventMap;
@@ -445,6 +456,144 @@ export type RequiredFields<T, K extends keyof T> = T & Required<Pick<T, K>>;
 
 export type OptionalFields<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
 
+// Authentication types
+export interface User {
+  id: string;
+  email: string;
+  name: string;
+  avatar?: string;
+  provider: 'google' | 'local';
+  isGuest: boolean;
+  createdAt: number;
+  lastLoginAt: number;
+  settings: UserSettings;
+  achievements: string[];
+  statistics: UserStatistics;
+}
+
+export interface UserSettings {
+  soundEnabled: boolean;
+  musicEnabled: boolean;
+  notifications: boolean;
+  showAnimations: boolean;
+  privacy: UserPrivacySettings;
+  gameplay: UserGameplaySettings;
+}
+
+export interface UserPrivacySettings {
+  profileVisible: boolean;
+  achievementsVisible: boolean;
+  statisticsVisible: boolean;
+  allowFriendRequests: boolean;
+}
+
+export interface UserGameplaySettings {
+  autoSaveEnabled: boolean;
+  autoSaveInterval: number;
+  showTooltips: boolean;
+  confirmDangerousActions: boolean;
+}
+
+export interface UserStatistics {
+  totalPlayTime: number;
+  sessionsPlayed: number;
+  longestSession: number;
+  achievementsUnlocked: number;
+  totalExperienceGained: number;
+  totalGoldEarned: number;
+  totalActionsCompleted: number;
+  loginStreak: number;
+  lastLoginDate: number;
+}
+
+export interface AuthToken {
+  accessToken: string;
+  refreshToken?: string;
+  expiresAt: number;
+  tokenType: string;
+  scope: string[];
+}
+
+export interface AuthState {
+  isAuthenticated: boolean;
+  user: User | null;
+  token: AuthToken | null;
+  isLoading: boolean;
+  error: string | null;
+  lastActivity: number;
+}
+
+export interface AuthCredentials {
+  provider: 'google';
+  code?: string;
+  token?: string;
+  idToken?: string;
+}
+
+export interface GoogleUserInfo {
+  id: string;
+  email: string;
+  name: string;
+  given_name?: string;
+  family_name?: string;
+  picture?: string;
+  locale?: string;
+  verified_email?: boolean;
+}
+
+export interface AuthConfig {
+  google: {
+    clientId: string;
+    clientSecret?: string;
+    redirectUri: string;
+    scope: string[];
+    hostedDomain?: string;
+  };
+  storage: {
+    tokenKey: string;
+    userKey: string;
+    authStateKey: string;
+  };
+  session: {
+    maxInactivity: number; // in milliseconds
+    refreshThreshold: number; // refresh token when less than this time remaining
+  };
+}
+
+export interface AuthError {
+  code: 'INVALID_REQUEST' | 'UNAUTHORIZED' | 'NETWORK_ERROR' | 'TOKEN_EXPIRED' | 'UNKNOWN';
+  message: string;
+  details?: any;
+}
+
+export interface AuthEvent {
+  type: 'auth:login' | 'auth:logout' | 'auth:token_refresh' | 'auth:error' | 'auth:session_expired';
+  payload: any;
+  timestamp: number;
+}
+
+// Enhanced save data with user association
+export interface UserSaveData {
+  userId: string;
+  saveId: string;
+  gameState: GameState;
+  metadata: SaveMetadata & {
+    isCloudSynced: boolean;
+    syncTimestamp?: number;
+    deviceId: string;
+  };
+}
+
+export interface CloudSaveData {
+  id: string;
+  userId: string;
+  saveData: string; // encrypted/compressed
+  metadata: SaveMetadata;
+  createdAt: number;
+  updatedAt: number;
+  isActive: boolean;
+}
+
 // Game configuration constants
 export const GAME_CONSTANTS = {
   MAX_LEVEL: 99,
@@ -455,4 +604,33 @@ export const GAME_CONSTANTS = {
   NOTIFICATION_DURATION: 5000, // 5 seconds
   MAX_INVENTORY_SLOTS: 28,
   BASE_ACTION_TIME: 1000, // 1 second
+} as const;
+
+// Authentication constants
+export const AUTH_CONSTANTS = {
+  DEFAULT_AUTH_CONFIG: {
+    google: {
+      clientId: '', // To be configured
+      redirectUri: `${window.location.origin}/auth/callback`,
+      scope: [
+        'openid',
+        'email',
+        'profile'
+      ]
+    },
+    storage: {
+      tokenKey: 'kelvor_auth_token',
+      userKey: 'kelvor_user_data',
+      authStateKey: 'kelvor_auth_state'
+    },
+    session: {
+      maxInactivity: 60 * 60 * 1000, // 1 hour
+      refreshThreshold: 5 * 60 * 1000 // 5 minutes
+    }
+  },
+  OAUTH_CONFIG: {
+    response_type: 'code',
+    access_type: 'offline',
+    prompt: 'consent'
+  }
 } as const;

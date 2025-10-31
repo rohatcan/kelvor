@@ -116,7 +116,11 @@ export default defineConfig({
 
   // Environment variables
   define: {
-    __APP_VERSION__: JSON.stringify(process.env.npm_package_version),
-    __BUILD_TIME__: JSON.stringify(new Date().toISOString())
+    __APP_VERSION__: JSON.stringify(process.env.npm_package_version || '0.1.0'),
+    __BUILD_TIME__: JSON.stringify(new Date().toISOString()),
+    __DEV__: JSON.stringify(process.env.NODE_ENV === 'development'),
+    // Google OAuth2 configuration (only expose client ID to frontend)
+    'process.env.GOOGLE_CLIENT_ID': JSON.stringify(process.env.GOOGLE_CLIENT_ID || process.env.VITE_GOOGLE_CLIENT_ID || ''),
+    'process.env.GOOGLE_HOSTED_DOMAIN': JSON.stringify(process.env.GOOGLE_HOSTED_DOMAIN || '')
   }
 })

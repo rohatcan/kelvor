@@ -6,6 +6,9 @@
 export { GameEngine } from '@/core/GameEngine';
 export { EventSystem, eventSystem, EventQueue } from '@/core/EventSystem';
 export { SaveLoadSystem } from '@/core/SaveLoadSystem';
+export { AuthService, authService } from '@/core/AuthService';
+export { AuthSaveLoadSystem } from '@/core/AuthSaveLoadSystem';
+export { OAuthCallbackHandler } from '@/core/OAuthCallbackHandler';
 
 // Game systems
 export { WoodcuttingSystem, woodcuttingSystem } from '@/systems/WoodcuttingSystem';
@@ -27,6 +30,8 @@ export {
   ProgressBar,
   ToastNotification,
 } from '@/components/UIComponent';
+export { AuthComponent } from '@/components/AuthComponent';
+export { UserProfileComponent } from '@/components/UserProfileComponent';
 
 // Game data
 export {
