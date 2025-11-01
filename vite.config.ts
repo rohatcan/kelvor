@@ -111,7 +111,9 @@ export default defineConfig({
   // Optimization configuration
   optimizeDeps: {
     include: ['phaser'],
-    exclude: []
+    exclude: [],
+    // Prevent externalization of Node.js built-in modules that should be polyfilled
+    force: true
   },
 
   // Environment variables
@@ -121,6 +123,10 @@ export default defineConfig({
     __DEV__: JSON.stringify(process.env.NODE_ENV === 'development'),
     // Google OAuth2 configuration (only expose client ID to frontend)
     'process.env.GOOGLE_CLIENT_ID': JSON.stringify(process.env.GOOGLE_CLIENT_ID || process.env.VITE_GOOGLE_CLIENT_ID || ''),
-    'process.env.GOOGLE_HOSTED_DOMAIN': JSON.stringify(process.env.GOOGLE_HOSTED_DOMAIN || '')
+    'process.env.GOOGLE_HOSTED_DOMAIN': JSON.stringify(process.env.GOOGLE_HOSTED_DOMAIN || ''),
+    // Define Node.js globals for browser compatibility
+    'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'development'),
+    'global': 'globalThis',
+    'Buffer': 'undefined'
   }
 })

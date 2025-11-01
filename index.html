@@ -940,13 +940,8 @@
       }
     });
 
-    // Vite HMR support for development
-    if (import.meta.hot) {
-      import.meta.hot.accept(() => {
-        console.log('Hot module replacement accepted');
-        location.reload();
-      });
-    }
+    // Note: HMR is handled automatically by Vite's module system
+    // No need for manual HMR handling here
   </script>
 </body>
 </html>

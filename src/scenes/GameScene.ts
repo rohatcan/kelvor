@@ -5,6 +5,7 @@ import { Scene } from 'phaser';
 import { GameEngine } from '@/core/GameEngine';
 import { eventSystem } from '@/core/EventSystem';
 import { woodcuttingSystem } from '@/systems/WoodcuttingSystem';
+import { skillDataLoader } from '@/systems/skills/SkillDataLoader';
 import { GameUtils } from '@/utils/GameCalculations';
 import { Player, GameState, WoodcuttingSkill } from '@/types';
 
@@ -13,6 +14,7 @@ export class GameScene extends Scene {
   private gameState!: GameState;
   private player!: Player;
   private woodcuttingSkill!: WoodcuttingSkill;
+  private newWoodcuttingSystem?: any; // Will be set to WoodcuttingSkillSystem
 
   // UI Elements
   private uiElements: {
@@ -94,12 +96,31 @@ export class GameScene extends Scene {
 
       this.player = this.gameState.player;
       this.woodcuttingSkill = this.gameState.woodcutting;
+
+      // Ensure critical game objects are properly initialized
+      if (!this.player) {
+        console.warn('Player not found in game state, creating fallback player');
+        this.player = this.gameEngine.createDefaultPlayer();
+      }
+
+      if (!this.woodcuttingSkill) {
+        console.warn('Woodcutting skill not found in game state, creating fallback skill');
+        this.woodcuttingSkill = this.gameEngine.createDefaultWoodcuttingSkill();
+      }
+
+      // Get the new woodcutting system from the skill data loader
+      this.newWoodcuttingSystem = skillDataLoader.getSkillSystem('woodcutting');
+      if (this.newWoodcuttingSystem) {
+        console.log('New woodcutting system loaded');
+      }
     } catch (error) {
       console.error('Failed to load/create game state:', error);
       // Fallback to new game
       this.gameState = this.gameEngine.getGameState() as GameState;
       this.player = this.gameState.player;
       this.woodcuttingSkill = this.gameState.woodcutting;
+
+      this.newWoodcuttingSystem = skillDataLoader.getSkillSystem('woodcutting');
     }
   }
 
@@ -147,7 +168,51 @@ export class GameScene extends Scene {
   }
 
   private createTrees(): void {
-    const availableTrees = woodcuttingSystem.getTreesForLevel(this.woodcuttingSkill.level);
+    // Ensure woodcuttingSkill is properly initialized
+    if (!this.woodcuttingSkill) {
+      console.warn('Woodcutting skill not initialized, creating fallback skill');
+      this.woodcuttingSkill = {
+        id: 'woodcutting',
+        name: 'Woodcutting',
+        level: 1,
+        experience: 0,
+        experienceToNext: 1000,
+        totalLogsChopped: 0,
+        treesUnlocked: [],
+        toolsOwned: [],
+        currentTool: {
+          id: 'tool_bronze_hatchet',
+          name: 'Bronze Hatchet',
+          level: 1,
+          speed: 1.0,
+          effectiveness: 1.0,
+          durability: 100,
+          maxDurability: 100,
+          icon: 'bronze_hatchet.png',
+          description: 'A basic bronze hatchet.',
+          buyPrice: 50,
+          sellPrice: 15,
+        }
+      };
+    }
+
+    // Try to use new skill system first, fallback to old system
+    let availableTrees: any[] = [];
+    let currentLevel = this.woodcuttingSkill.level || 1;
+
+    if (this.newWoodcuttingSystem) {
+      try {
+        availableTrees = this.newWoodcuttingSystem.getAvailableTrees();
+        const skillState = this.newWoodcuttingSystem.getState();
+        currentLevel = skillState?.level || 1;
+      } catch (error) {
+        console.warn('New woodcutting system failed, using fallback:', error);
+        availableTrees = woodcuttingSystem.getTreesForLevel(currentLevel);
+      }
+    } else {
+      availableTrees = woodcuttingSystem.getTreesForLevel(currentLevel);
+    }
+
     const treeSpacing = 120;
     const startX = 150;
     const groundY = this.cameras.main.height - 100;
@@ -186,7 +251,47 @@ export class GameScene extends Scene {
   }
 
   private createPlayer(): void {
-    const { x, y } = this.player.position;
+    // Ensure player is properly initialized
+    if (!this.player) {
+      console.warn('Player not initialized, creating fallback player');
+      this.player = {
+        id: 'anonymous_player',
+        name: 'Anonymous Player',
+        level: 1,
+        experience: 0,
+        experienceToNext: 1000,
+        health: 100,
+        maxHealth: 100,
+        position: { x: 400, y: 300 },
+        stats: {
+          attack: 1,
+          defense: 1,
+          strength: 1,
+          hitpoints: 10,
+          ranged: 1,
+          prayer: 1,
+          magic: 1,
+          cooking: 1,
+          woodcutting: 1,
+          fishing: 1,
+          mining: 1,
+          smithing: 1,
+          herblore: 1,
+          agility: 1,
+          thieving: 1,
+          slayer: 1,
+          farming: 1,
+          runecrafting: 1,
+          hunter: 1,
+          construction: 1,
+        },
+        inventory: [],
+        skills: [],
+        gold: 100,
+      };
+    }
+
+    const { x, y } = this.player.position || { x: 400, y: 300 };
 
     this.playerSprite = this.add.rectangle(x, y, 30, 40, 0xFF6B6B)
       .setOrigin(0.5)
@@ -219,14 +324,26 @@ export class GameScene extends Scene {
       fontStyle: 'bold',
     }).setOrigin(0.5);
 
-    // Current tool info
-    const currentTool = this.woodcuttingSkill.currentTool
-      ? woodcuttingSystem.getTool(this.woodcuttingSkill.currentTool.id)
-      : null;
+    // Current tool info - try new system first
+    let currentTool: any = null;
+    let toolText = 'No tool equipped';
 
-    const toolText = currentTool
-      ? `Tool: ${currentTool.name} (Durability: ${currentTool.durability}/${currentTool.maxDurability})`
-      : 'No tool equipped';
+    if (this.newWoodcuttingSystem) {
+      currentTool = this.newWoodcuttingSystem.getCurrentTool();
+      if (currentTool) {
+        const durability = this.newWoodcuttingSystem.getToolDurability(currentTool.id);
+        toolText = `Tool: ${currentTool.name} (Durability: ${durability}/${currentTool.maxDurability})`;
+      }
+    } else {
+      // Fallback to old system
+      currentTool = (this.woodcuttingSkill?.currentTool)
+        ? woodcuttingSystem.getTool(this.woodcuttingSkill.currentTool.id)
+        : null;
+
+      if (currentTool) {
+        toolText = `Tool: ${currentTool.name} (Durability: ${currentTool.durability}/${currentTool.maxDurability})`;
+      }
+    }
 
     this.add.text(width / 2, 80, toolText, {
       fontSize: '14px',
@@ -234,7 +351,13 @@ export class GameScene extends Scene {
     }).setOrigin(0.5);
 
     // Available tools
-    const availableTools = woodcuttingSystem.getToolsForLevel(this.woodcuttingSkill.level);
+    let availableTools: any[] = [];
+    if (this.newWoodcuttingSystem) {
+      availableTools = this.newWoodcuttingSystem.getUnlockedTools();
+    } else {
+      availableTools = woodcuttingSystem.getToolsForLevel(this.woodcuttingSkill?.level || 1);
+    }
+
     this.add.text(width / 2, 110, `Available Tools: ${availableTools.length}`, {
       fontSize: '12px',
       color: '#FFFFFF',
@@ -326,32 +449,54 @@ export class GameScene extends Scene {
   }
 
   private async chopTree(treeId: string): Promise<void> {
-    if (!this.woodcuttingSkill.currentTool) {
-      this.showNotification('You need to equip a tool first!', 'warning');
-      return;
-    }
+    // Try new skill system first, fallback to old system
+    if (this.newWoodcuttingSystem) {
+      const canChop = this.newWoodcuttingSystem.canChopTree(treeId);
+      if (!canChop.canChop) {
+        this.showNotification(canChop.reason || 'Cannot chop this tree', 'warning');
+        return;
+      }
 
-    // Check if can chop
-    const canChop = woodcuttingSystem.canChopTree(this.woodcuttingSkill, treeId, this.woodcuttingSkill.currentTool!.id);
-    if (!canChop.canChop) {
-      this.showNotification(canChop.reason || 'Cannot chop this tree', 'warning');
-      return;
-    }
+      // Start chopping animation
+      this.startChoppingAnimation();
 
-    // Start chopping animation
-    this.startChoppingAnimation();
+      // Perform chop action
+      const result = await this.newWoodcuttingSystem.chopTree(treeId);
 
-    // Perform chop action
-    const result = await woodcuttingSystem.chopTree(this.woodcuttingSkill, treeId, this.woodcuttingSkill.currentTool!.id);
+      // Stop animation
+      this.stopChoppingAnimation();
 
-    // Stop animation
-    this.stopChoppingAnimation();
-
-    if (result.success) {
-      // Process rewards
-      this.processRewards(result);
+      if (result.success) {
+        this.showNotification('Tree chopped successfully!', 'success');
+      } else {
+        this.showNotification(result.failureReason || 'Failed to chop tree', 'error');
+      }
     } else {
-      this.showNotification(result.failureReason || 'Failed to chop tree', 'error');
+      // Fallback to old system
+      if (!this.woodcuttingSkill?.currentTool) {
+        this.showNotification('You need to equip a tool first!', 'warning');
+        return;
+      }
+
+      const canChop = woodcuttingSystem.canChopTree(this.woodcuttingSkill!, treeId, this.woodcuttingSkill.currentTool!.id);
+      if (!canChop.canChop) {
+        this.showNotification(canChop.reason || 'Cannot chop this tree', 'warning');
+        return;
+      }
+
+      // Start chopping animation
+      this.startChoppingAnimation();
+
+      const result = await woodcuttingSystem.chopTree(this.woodcuttingSkill!, treeId, this.woodcuttingSkill.currentTool!.id);
+
+      // Stop animation
+      this.stopChoppingAnimation();
+
+      if (result.success) {
+        this.processRewards(result);
+      } else {
+        this.showNotification(result.failureReason || 'Failed to chop tree', 'error');
+      }
     }
 
     // Update displays
@@ -404,20 +549,20 @@ export class GameScene extends Scene {
   }
 
   private updatePlayerDisplay(): void {
-    if (this.uiElements.playerText) {
-      this.uiElements.playerText.setText(`${this.player.name} - Level ${this.player.level}`);
+    if (this.uiElements.playerText && this.player) {
+      this.uiElements.playerText.setText(`${this.player?.name || 'Anonymous Player'} - Level ${this.player?.level || 1}`);
     }
   }
 
   private updateGoldDisplay(): void {
-    if (this.uiElements.goldText) {
-      this.uiElements.goldText.setText(`Gold: ${GameUtils.formatNumber(this.player.gold)}`);
+    if (this.uiElements.goldText && this.player) {
+      this.uiElements.goldText.setText(`Gold: ${GameUtils.formatNumber(this.player?.gold || 0)}`);
     }
   }
 
   private updateExperienceDisplay(): void {
-    if (this.uiElements.expBar && this.uiElements.expBarBg) {
-      const progress = GameUtils.experience.getProgressToNextLevel(this.player.experience, this.player.level);
+    if (this.uiElements.expBar && this.uiElements.expBarBg && this.player) {
+      const progress = GameUtils.experience.getProgressToNextLevel(this.player?.experience || 0, this.player?.level || 1);
       const barWidth = this.uiElements.expBarBg.width * progress;
       this.uiElements.expBar.width = barWidth;
     }
@@ -425,11 +570,20 @@ export class GameScene extends Scene {
 
   private updateWoodcuttingDisplay(): void {
     if (this.uiElements.woodcuttingText) {
-      const stats = woodcuttingSystem.calculateTotalStats(this.woodcuttingSkill);
-      this.uiElements.woodcuttingText.setText(
-        `Woodcutting: Level ${stats.currentLevel} (${Math.floor(stats.progressToNext * 100)}%)\n` +
-        `Logs Chopped: ${GameUtils.formatNumber(stats.totalLogsChopped)}`
-      );
+      // Try new skill system first, fallback to old system
+      if (this.newWoodcuttingSystem) {
+        const stats = this.newWoodcuttingSystem.getWoodcuttingStatistics();
+        this.uiElements.woodcuttingText.setText(
+          `Woodcutting: Level ${stats.currentLevel} (${Math.floor(stats.progressToNext * 100)}%)\n` +
+          `Logs Chopped: ${GameUtils.formatNumber(stats.totalLogsChopped)}`
+        );
+      } else {
+        const stats = woodcuttingSystem.calculateTotalStats(this.woodcuttingSkill);
+        this.uiElements.woodcuttingText.setText(
+          `Woodcutting: Level ${stats.currentLevel} (${Math.floor(stats.progressToNext * 100)}%)\n` +
+          `Logs Chopped: ${GameUtils.formatNumber(stats.totalLogsChopped)}`
+        );
+      }
     }
   }
 

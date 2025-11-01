@@ -307,6 +307,9 @@ export interface SaveMetadata {
 // Enhanced event system
 export interface GameEventMap {
   'skill:level_up': { skillId: string; newLevel: number };
+  'skill:unlocked': { skillId: string };
+  'skill:action_unlocked': { skillId: string; actionId: string };
+  'skill:experience_gained': { skillId: string; amount: number };
   'action:started': { actionId: string; duration: number };
   'action:completed': { actionId: string; rewards: ActionReward[] };
   'action:failed': { actionId: string; reason: string };
@@ -314,6 +317,7 @@ export interface GameEventMap {
   'inventory:removed': { item: InventoryItem; quantity: number };
   'player:gold_changed': { amount: number; newTotal: number };
   'player:experience_gained': { skillId: string; amount: number; newTotal: number };
+  'player:level_up': { newLevel: number };
   'game:saved': { timestamp: number };
   'game:loaded': { timestamp: number };
   'game:started': { timestamp: number };
@@ -323,6 +327,7 @@ export interface GameEventMap {
   'woodcutting:tree_chopped': { treeId: string; logCount: number; experience: number };
   'woodcutting:tool_equipped': { toolId: string };
   'achievement:unlocked': { achievementId: string };
+  'quest:completed': { questId: string };
   // Authentication events
   'auth:login': { user: User; isNewUser: boolean };
   'auth:logout': { reason?: string };

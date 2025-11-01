@@ -14,6 +14,24 @@ export class MainMenuScene extends Scene {
     super({ key: 'MainMenuScene' });
   }
 
+  /**
+   * Safely play audio with error handling
+   */
+  private playSoundSafely(soundKey: string): void {
+    try {
+      // Check if sound system exists and audio key is loaded
+      if (this.sound && this.sound.get(soundKey)) {
+        this.sound.play(soundKey);
+      } else {
+        // Silently skip audio if not available
+        console.log(`Audio ${soundKey} not available, continuing without sound`);
+      }
+    } catch (error) {
+      // Handle any unexpected audio errors gracefully
+      console.warn(`Audio playback failed for ${soundKey}:`, error);
+    }
+  }
+
   create(): void {
     const { width, height } = this.cameras.main;
 
@@ -51,9 +69,7 @@ export class MainMenuScene extends Scene {
       .setInteractive({ useHandCursor: true });
 
     playButton.on('pointerdown', () => {
-      if (this.sound) {
-        this.sound.play('click');
-      }
+      this.playSoundSafely('click');
       this.startGame();
     });
 
@@ -75,9 +91,7 @@ export class MainMenuScene extends Scene {
       .setInteractive({ useHandCursor: true });
 
     settingsButton.on('pointerdown', () => {
-      if (this.sound) {
-        this.sound.play('click');
-      }
+      this.playSoundSafely('click');
       this.toggleUserProfile();
     });
 
@@ -135,9 +149,7 @@ export class MainMenuScene extends Scene {
       .setVisible(false); // Initially hidden
 
     profileButton.on('pointerdown', () => {
-      if (this.sound) {
-        this.sound.play('click');
-      }
+      this.playSoundSafely('click');
       this.toggleUserProfile();
     });
 

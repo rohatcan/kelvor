@@ -2,7 +2,7 @@
  * Type-safe EventSystem for game-wide communication
  * Extends EventEmitter with strong typing for game events
  */
-import { EventEmitter } from 'events';
+import { EventEmitter } from './EventEmitter';
 import {
   GameEventMap,
   GameEventType,
@@ -254,6 +254,26 @@ export class EventSystem extends EventEmitter {
 
   public emitSkillLevelUp(skillId: string, newLevel: number): boolean {
     return this.emitGameEvent('skill:level_up', { skillId, newLevel });
+  }
+
+  public emitSkillUnlocked(skillId: string): boolean {
+    return this.emitGameEvent('skill:unlocked', { skillId });
+  }
+
+  public emitSkillActionUnlocked(skillId: string, actionId: string): boolean {
+    return this.emitGameEvent('skill:action_unlocked', { skillId, actionId });
+  }
+
+  public emitSkillExperienceGained(skillId: string, amount: number): boolean {
+    return this.emitGameEvent('skill:experience_gained', { skillId, amount });
+  }
+
+  public emitPlayerLevelUp(newLevel: number): boolean {
+    return this.emitGameEvent('player:level_up', { newLevel });
+  }
+
+  public emitQuestCompleted(questId: string): boolean {
+    return this.emitGameEvent('quest:completed', { questId });
   }
 
   public emitActionStarted(actionId: string, duration: number): boolean {

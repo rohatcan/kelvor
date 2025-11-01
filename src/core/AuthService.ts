@@ -2,7 +2,7 @@
  * Google OAuth2 Authentication Service
  * Handles user authentication, token management, and user sessions
  */
-import { EventEmitter } from 'events';
+import { EventEmitter } from './EventEmitter';
 import {
   AuthState,
   AuthToken,

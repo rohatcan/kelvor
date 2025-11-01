@@ -1,7 +1,7 @@
 /**
  * Core GameEngine class - manages game state, game loop, and system coordination
  */
-import { EventEmitter } from 'events';
+import { EventEmitter } from './EventEmitter';
 import {
   GameState,
   Player,
@@ -14,6 +14,8 @@ import {
   DeepPartial,
   TypedGameEvent,
 } from '@/types';
+import { skillRegistry } from '@/systems/skills/SkillRegistry';
+import { skillDataLoader } from '@/systems/skills/SkillDataLoader';
 
 export class GameEngine extends EventEmitter {
   private gameState!: GameState;
@@ -23,12 +25,14 @@ export class GameEngine extends EventEmitter {
   private gameLoopInterval?: NodeJS.Timeout;
   private autoSaveInterval?: NodeJS.Timeout;
   private sessionStartTime: number = 0;
+  private skillSystemInitialized: boolean = false;
 
   constructor() {
     super();
     this.initializeGameState();
     this.initializeUIState();
     this.setupEventHandlers();
+    this.initializeSkillSystem();
   }
 
   /**
@@ -76,7 +80,7 @@ export class GameEngine extends EventEmitter {
   /**
    * Create default player data
    */
-  private createDefaultPlayer(): Player {
+  public createDefaultPlayer(): Player {
     return {
       id: 'player-1',
       name: 'Adventurer',
@@ -117,7 +121,7 @@ export class GameEngine extends EventEmitter {
   /**
    * Create default woodcutting skill
    */
-  private createDefaultWoodcuttingSkill(): WoodcuttingSkill {
+  public createDefaultWoodcuttingSkill(): WoodcuttingSkill {
     return {
       id: 'woodcutting',
       name: 'Woodcutting',
@@ -127,6 +131,20 @@ export class GameEngine extends EventEmitter {
       totalLogsChopped: 0,
       treesUnlocked: [],
       toolsOwned: [],
+      // Initialize with a basic starting tool
+      currentTool: {
+        id: 'tool_bronze_hatchet',
+        name: 'Bronze Hatchet',
+        level: 1,
+        speed: 1.0,
+        effectiveness: 1.0,
+        durability: 100,
+        maxDurability: 100,
+        icon: 'bronze_hatchet.png',
+        description: 'A basic bronze hatchet for chopping trees.',
+        buyPrice: 50,
+        sellPrice: 15,
+      }
     };
   }
 
@@ -379,12 +397,32 @@ export class GameEngine extends EventEmitter {
   }
 
   /**
+   * Initialize the skill system
+   */
+  private initializeSkillSystem(): void {
+    // Initialize skill registry with basic configuration
+    const skillConfig = {
+      skills: [], // Will be populated by individual skill systems
+      unlockOrder: ['woodcutting', 'fishing', 'mining', 'cooking', 'crafting'],
+      globalRequirements: {},
+    };
+
+    skillRegistry.initialize(skillConfig);
+
+    // Initialize and register all skill systems
+    skillDataLoader.initialize(this);
+
+    this.skillSystemInitialized = true;
+    console.log('Skill system initialized with', skillDataLoader.getSkillCount(), 'skills');
+  }
+
+  /**
    * Handle experience gain
    */
   private handleExperienceGained(skillId: string, amount: number): void {
     this.gameState.gameStats.totalExperienceGained += amount;
 
-    // Check for level up
+    // Check for level up (legacy woodcutting handling)
     if (skillId === 'woodcutting' && this.gameState.woodcutting) {
       const skill = this.gameState.woodcutting;
       skill.experience += amount;
@@ -397,6 +435,47 @@ export class GameEngine extends EventEmitter {
         this.emit('skill:level_up', { skillId, newLevel: skill.level });
       }
     }
+
+    // Generic skill system handling is done by the individual skill systems
+  }
+
+  /**
+   * Get the skill registry
+   */
+  public getSkillRegistry() {
+    return skillRegistry;
+  }
+
+  /**
+   * Get the skill data loader
+   */
+  public getSkillDataLoader() {
+    return skillDataLoader;
+  }
+
+  /**
+   * Get skill system by ID
+   */
+  public getSkillSystem(skillId: string) {
+    return skillRegistry.getSkill(skillId);
+  }
+
+  /**
+   * Get all available actions from all skills
+   */
+  public getAllAvailableActions() {
+    return skillRegistry.getAllPerformableActions();
+  }
+
+  /**
+   * Perform a skill action
+   */
+  public async performSkillAction(skillId: string, actionId: string, context?: any) {
+    const skillSystem = skillRegistry.getSkill(skillId);
+    if (!skillSystem) {
+      throw new Error(`Skill not found: ${skillId}`);
+    }
+    return await skillSystem.performAction(actionId, context);
   }
 
   /**
@@ -441,6 +520,9 @@ export class GameEngine extends EventEmitter {
    */
   public async saveGame(): Promise<void> {
     try {
+      // Save skill system states
+      const skillData = this.skillSystemInitialized ? skillRegistry.saveAllSkills() : null;
+
       const saveData: SaveData = {
         version: __APP_VERSION__,
         gameState: this.gameState,
@@ -452,6 +534,11 @@ export class GameEngine extends EventEmitter {
           appVersion: __APP_VERSION__,
         },
       };
+
+      // Include skill data if available
+      if (skillData) {
+        (saveData as any).skillData = skillData;
+      }
 
       // Save to localStorage
       localStorage.setItem('kelvor_savegame', JSON.stringify(saveData));
@@ -502,6 +589,18 @@ export class GameEngine extends EventEmitter {
 
       // Load the game state
       this.gameState = saveData.gameState;
+
+      // Load skill system states if available
+      if (this.skillSystemInitialized && (saveData as any).skillData) {
+        try {
+          skillRegistry.loadAllSkills((saveData as any).skillData);
+          console.log('Skill system states loaded');
+        } catch (error) {
+          console.error('Failed to load skill system states:', error);
+          // Continue without skill data - will create new states
+        }
+      }
+
       this.emit('game:loaded', { timestamp: Date.now() });
 
       console.log('Game loaded successfully');

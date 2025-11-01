@@ -10,3 +10,6 @@ Multi-skill Progression System
 Woodcutting Skill with minimal animation
 
 
+## FIX ISSUES FIRST
+
+- Start page is stuck with Initializing %0
